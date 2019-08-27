@@ -1,26 +1,21 @@
-import { Scene } from "three";
-import { createHash, Hash } from "crypto";
-import context from "./functions";
+import { Port } from "./Types";
+import { createHash } from "crypto";
+import Context from "./Context";
 
 import livescript from "livescript";
 
-// console.log(LiveScript);
-
 class Repl {
   lastScriptID: string;
-  port: { scene: Scene };
-  constructor(port: { scene: Scene }) {
+  port: Port;
+  constructor(port: Port) {
     this.lastScriptID = this.updateHash();
 
     //make context
-    Object.keys(context).map(k => {
-      window[k] = context[k];
+    const c_ = Context(port);
+    Object.keys(c_).map(k => {
+      console.log(k, "hasbean exported..");
+      window[k] = c_[k];
     });
-    // var LiveScript = require("livecript");
-    // LiveScript.go();
-
-    let livescript_ = livescript.go();
-    console.log(livescript_);
   }
 
   updateHash(): string {
@@ -29,38 +24,27 @@ class Repl {
       .digest("hex"));
   }
 
-  // livesdcriptCompile(input: string): string {
-  //   let code = undefined;
-  //   try {
-  //     code = livesdcript.compile(
-  //       input,
-  //       {},
-  //       {},
-  //       {
-  //         modules: {
-  //           dom:
-  //             "document: {documentURI: String, getElementById: Function(String,{getAttribute: Function(String,String), innerHTML: String, innerText: String, tagName: String})}\n"
-  //         }
-  //       }
-  //     ).output;
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  //   return code;
-  // }
+  livesdcriptCompile(input: string): string {
+    const compiler = livescript["compile"];
+    const res = compiler(input);
+    console.log(res);
+    return res;
+  }
 
-  execInScriptTag(code) {
+  execInScriptTag(code: string) {
+    let error = null;
     this.removeScript(this.lastScriptID);
     const script = document.createElement("script");
     this.lastScriptID = this.updateHash();
 
     script.id = this.lastScriptID;
-    script.type = "text/ls";
-    script.text =
-      // "(function(context) { try {" +
-      code;
-    // "\n } catch (e) { postError(e) } })(window.context)";
-    document.body.appendChild(script);
+    script.text = this.livesdcriptCompile(code);
+    try {
+      document.body.appendChild(script);
+    } catch (e) {
+      error = e;
+    }
+    return error;
   }
 
   removeScript(hash: string) {

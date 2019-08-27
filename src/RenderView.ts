@@ -1,34 +1,32 @@
+import { Port } from "./Types";
 import {
   Scene,
   PerspectiveCamera,
   WebGLRenderer,
-  TorusGeometry,
-  MeshStandardMaterial,
-  Mesh,
   AmbientLight,
   PointLight,
   Color
 } from "three";
 
 class RenderView {
-  camera: PerspectiveCamera;
-  scene: Scene = new Scene();
-  renderer: WebGLRenderer;
-  width: number;
-  height: number;
-  port: { scene: Scene };
-  obj: Mesh;
+  private camera: PerspectiveCamera;
+  private scene: Scene = new Scene();
+  private renderer: WebGLRenderer;
+  private width: number;
+  private height: number;
+  public port: Port;
 
   constructor() {
     this.port = this.init();
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
     this.animate();
   }
 
-  init(): { scene: Scene } {
-    // return;
+  init(): Port {
+    this.renderer = new WebGLRenderer({});
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.renderer = new WebGLRenderer({});
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.camera = new PerspectiveCamera(
@@ -44,11 +42,6 @@ class RenderView {
     this.scene.background = new Color(0xffffff);
 
     this.intiLight();
-
-    this.obj = this.defaultObj();
-    this.obj.position.set(0, 0, 0);
-    this.scene.add(this.obj);
-
     return { scene: this.scene };
   }
 
@@ -69,19 +62,13 @@ class RenderView {
     this.scene.add(lights[2]);
   }
 
-  defaultObj() {
-    const geom = new TorusGeometry(10, 3, 16, 100);
-    const material = new MeshStandardMaterial({ color: 0x2194ce });
-    return new Mesh(geom, material);
-  }
-
   render() {
     this.renderer.render(this.scene, this.camera);
   }
 
   animate() {
-    this.obj.rotation.x += 0.005;
-    this.obj.rotation.y += 0.005;
+    this.scene.rotation.x += 0.005;
+    this.scene.rotation.y += 0.005;
 
     this.render();
     requestAnimationFrame(this.animate.bind(this));

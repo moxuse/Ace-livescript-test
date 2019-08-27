@@ -1,15 +1,15 @@
 require("ace-min-noconflict");
 require("ace-min-noconflict/mode-javascript");
 
+import { Port } from "./Types";
 import Repl from "./Repl";
-import { Scene } from "three";
 
 class Editor {
   editor = ace.edit("editor");
   repl: Repl;
-  port: { scene: Scene };
+  port: Port;
 
-  constructor(port: { scene: Scene }) {
+  constructor(port: Port) {
     this.repl = new Repl(port);
     this.init();
   }
@@ -35,18 +35,13 @@ class Editor {
     if (!this.editor || !this.editor.session) {
       return;
     }
-    // console.log(
-    //   this.editor.session.getRowLength(),
-    //   this.editor.session.getLines()
-    // );
+
     if (0 < this.editor.session.getRowLength()) {
       var currline = this.editor.getSelectionRange().start.row;
       var wholelinetxt = this.editor.session.getLine(currline);
-      // console.log("input", wholelinetxt);
-      // const compile = this.repl.livesdcriptCompile(wholelinetxt);
 
       const res = this.repl.execInScriptTag(wholelinetxt);
-      console.log("res....", wholelinetxt, res);
+      // console.log("res....", wholelinetxt, res);
     }
   }
 
@@ -64,8 +59,8 @@ class Editor {
     return arr;
   }
 
-  openFile(file) {
-    require("fs").readFile(file, "utf8", function(err, data) {
+  openFile(file: string) {
+    require("fs").readFile(file, "utf8", data => {
       this.editor.setValue(data, -1);
     });
   }
