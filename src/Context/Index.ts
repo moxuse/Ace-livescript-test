@@ -12,7 +12,6 @@ export default function(port: Port) {
   const render = (input: YNode) => {
     switch (input.type) {
       case "Mesh":
-        console.log("in render swith", port);
         port.scene.add(input);
         break;
       default:
