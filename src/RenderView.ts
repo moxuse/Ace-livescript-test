@@ -35,7 +35,7 @@ class RenderView {
       0.1,
       1000
     );
-    this.camera.position.set(0, 0, 100);
+    this.camera.position.set(0, 0, 10);
     const el = document.getElementById("renderView");
     el.appendChild(this.renderer.domElement);
 
@@ -47,12 +47,16 @@ class RenderView {
 
   intiLight() {
     const ambientLight = new AmbientLight(0x2e9992);
+    ambientLight.tag = "light";
     this.scene.add(ambientLight);
 
     let lights = [];
     lights[0] = new PointLight(0xffffff, 1, 0);
     lights[1] = new PointLight(0xffffff, 1, 0);
     lights[2] = new PointLight(0xffffff, 1, 0);
+    lights[0].tag = "light";
+    lights[1].tag = "light";
+    lights[2].tag = "light";
 
     lights[0].position.set(0, 200, 0);
     lights[1].position.set(100, 200, 100);

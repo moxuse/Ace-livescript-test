@@ -1,5 +1,7 @@
 import { YNode, Port } from "../Types";
 import TorusMesh from "./Nodes/Mesh/TorusMsh";
+import SphereMesh from "./Nodes/Mesh/SphereMesh";
+import { Object3D } from "three";
 
 export default function(port: Port) {
   const throughput = (input: string) => {
@@ -7,9 +9,9 @@ export default function(port: Port) {
   };
 
   /*
-    Render function
+    Add function
   */
-  const render = (input: YNode) => {
+  const add = (input: YNode) => {
     switch (input.type) {
       case "Mesh":
         port.scene.add(input);
@@ -19,6 +21,16 @@ export default function(port: Port) {
     }
   };
 
+  const remove = () => {
+    for (let child: Object3D of port.scene.children) {
+      if (child.tag != "light") {
+        port.scene.remove(child);
+      }
+    }
+  };
+
   const torus = TorusMesh();
-  return { render, throughput, torus };
+  const sphere = SphereMesh();
+
+  return { remove, add, throughput, torus, sphere };
 }

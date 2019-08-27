@@ -42,6 +42,9 @@ class Editor {
 
       const res = this.repl.execInScriptTag(wholelinetxt);
       // console.log("res....", wholelinetxt, res);
+      if (0 < res.length) {
+        this.postWindow(res);
+      }
     }
   }
 

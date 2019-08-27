@@ -1,7 +1,7 @@
-import { Mesh, TorusGeometry, MeshStandardMaterial } from "three";
+import { Mesh, SphereGeometry, MeshStandardMaterial } from "three";
 
 export default function(): Mesh {
-  const geom = new TorusGeometry(1, 0.5, 16, 100);
+  const geom = new SphereGeometry(1, 28, 28);
   const material = new MeshStandardMaterial({ color: 0x2194ce });
   return new Mesh(geom, material);
 }

@@ -41,10 +41,10 @@ class Repl {
     script.text = this.livesdcriptCompile(code);
     try {
       document.body.appendChild(script);
+      return script.text;
     } catch (e) {
-      error = e;
+      return e;
     }
-    return error;
   }
 
   removeScript(hash: string) {
